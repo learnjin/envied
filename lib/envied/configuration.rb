@@ -47,7 +47,7 @@ class ENVied
 
     def reference(name, *args)
       variable name, *args
-      variable proc{ ENV[name.to_s] }, *args
+      references << [proc{ ENV[name.to_s] }, args]
     end
 
     def group(name, &block)
@@ -60,10 +60,11 @@ class ENVied
     def variables
       @variables ||= []
     end
+
+     def references
+       @references ||= []
+     end
     
-    def variables=(array)
-      @variables = array
-    end
   end
 
 end

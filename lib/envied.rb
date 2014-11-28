@@ -16,6 +16,10 @@ class ENVied
     requested_groups = (args && !args.empty?) ? args : ENV['ENVIED_GROUPS']
     env!(requested_groups, options)
     error_on_missing_variables!(options)
+
+    resolve_references!(requested_groups, options)
+    error_on_missing_variables!(options)
+
     error_on_uncoercible_variables!(options)
 
     ensure_spring_after_fork_require(args, options)
@@ -26,8 +30,21 @@ class ENVied
       config = options.fetch(:config) { Configuration.load }
       groups = required_groups(*requested_groups)
       EnvProxy.new(config, groups: groups)
-    end.tap(&:process_proc_names)
+    end
   end
+
+  def self.resolve_references!(requested_groups, options ={})
+    new_config = env.config
+
+    env.references.each do |method, args|
+      new_config.variable( method[], *args)
+    end
+
+    options[:config] = new_config
+
+    env!(requested_groups, options)
+  end
+
 
   def self.error_on_missing_variables!(options = {})
     names = env.missing_variables.map(&:name)

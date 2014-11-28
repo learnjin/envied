@@ -73,38 +73,36 @@ describe ENVied do
 
     describe 'referencing' do
 
-      it 'name can be assigned a Proc' do
-        configure do
-          variable proc{'a'}, :String
-        end.and_ENV({'a' => '1'})
-        envied_require
-        expect(described_class).to respond_to :a
+      context 'env contains all references' do
+
+        it 'allows using reference' do
+
+          configure do
+            reference  :A
+          end.and_ENV('A' => 'B', 'B' => 'C')
+
+          envied_require
+
+          expect(described_class).to respond_to :B
+          expect(described_class.B).to eq 'C' 
+
+        end
       end
 
-      it 'named can be defined in terms of other variables values' do
+      context 'env contains no referencing var' do
 
-        configure do
-          variable :A
-          variable proc{ |env| ENV['A'] } 
-        end.and_ENV('A' => 'B', 'B' => 'C')
+        specify do
+          configure do
+            reference  :A
+          end.and_no_ENV
 
-        envied_require
-
-        expect(described_class.B).to eq 'C' 
-      end
-
-      it 'allows using reference' do
-
-        configure do
-          reference  :A
-        end.and_ENV('A' => 'B', 'B' => 'C')
-
-        envied_require
-
-        expect(described_class).to respond_to :B
-        expect(described_class.B).to eq 'C' 
+          expect {
+            envied_require
+          }.to raise_error(/The following environment variables should be set: A/)
+        end
 
       end
+
 
     end
 

@@ -140,12 +140,10 @@ enable_defaults! { ENV['RACK_ENV'] == 'development' }
 variable :FORCE_SSL, :boolean, default: 'false'
 variable :PORT, :integer, default: proc {|envied| envied.FORCE_SSL ? 443 : 80 }
 
-variable :REDIS_PROVIDER, default: OPENREDIS_URL
-variable proc{ ENV['REDIS_PROVIDER'] }  # checks if OPENREDIS_URL is present
 
-# both of which is equivalent to
+# References
 
-reference :REDIS_PROVIDER
+reference :REDIS_PROVIDER  # will fail if ENV['REDIS_PROVIDER'] or ENV[ENV['REDIS_PROVIDER']] are undefined
 
 ```
 
