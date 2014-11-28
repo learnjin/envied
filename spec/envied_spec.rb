@@ -71,6 +71,27 @@ describe ENVied do
       expect(described_class).to respond_to :a
     end
 
+      it 'can be assigned a Proc' do
+        configure do
+          variable proc{'a'}, :String
+        end.and_ENV({'a' => '1'})
+        envied_require
+        expect(described_class).to respond_to :a
+      end
+
+      it 'can be named in terms of other variables values' do
+
+        configure do
+          variable :A
+          variable proc{ |env| ENV['A'] } 
+        end.and_ENV('A' => 'B', 'B' => 'C')
+
+        envied_require
+
+        expect(described_class.B).to eq 'C' 
+      end
+
+
     it 'responds not to unconfigured variables' do
       unconfigured.and_ENV({'A' => '1'})
       envied_require

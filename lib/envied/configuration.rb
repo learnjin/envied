@@ -55,6 +55,10 @@ class ENVied
     def variables
       @variables ||= []
     end
+    
+    def variables=(array)
+      @variables = array
+    end
   end
 
 end

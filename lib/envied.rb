@@ -26,7 +26,7 @@ class ENVied
       config = options.fetch(:config) { Configuration.load }
       groups = required_groups(*requested_groups)
       EnvProxy.new(config, groups: groups)
-    end
+    end.tap(&:process_proc_names)
   end
 
   def self.error_on_missing_variables!(options = {})

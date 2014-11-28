@@ -65,5 +65,16 @@ class ENVied
     def coerced?(var)
       coercer.coerced?(value_to_coerce(var))
     end
+
+    def process_proc_names
+      todo, regular = config.variables.partition{|v| v.name.respond_to?(:call)}
+      config.variables = regular
+
+      todo.each do |var|
+        config.variable(var.name[ENVied], var.type, :group => var.group, :default => var.default)
+      end
+
+    end
+
   end
 end
