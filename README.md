@@ -142,6 +142,11 @@ variable :PORT, :integer, default: proc {|envied| envied.FORCE_SSL ? 443 : 80 }
 
 variable :REDIS_PROVIDER, default: OPENREDIS_URL
 variable proc{ ENV['REDIS_PROVIDER'] }  # checks if OPENREDIS_URL is present
+
+# both of which is equivalent to
+
+reference :REDIS_PROVIDER
+
 ```
 
 Please remember that ENVied only **reads** from ENV; it doesn't mutate ENV.

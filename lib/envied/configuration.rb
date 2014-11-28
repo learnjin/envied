@@ -45,6 +45,11 @@ class ENVied
       variables << ENVied::Variable.new(name, type, options)
     end
 
+    def reference(name, *args)
+      variable name, *args
+      variable proc{ ENV[name.to_s] }, *args
+    end
+
     def group(name, &block)
       @current_group = name.to_sym
       yield
