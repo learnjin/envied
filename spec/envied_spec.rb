@@ -89,8 +89,7 @@ describe ENVied do
         end
       end
 
-      context 'env contains no referencing var' do
-
+      context 'env is missing references' do
         specify do
           configure do
             reference  :A
@@ -100,7 +99,34 @@ describe ENVied do
             envied_require
           }.to raise_error(/The following environment variables should be set: A/)
         end
+      end
 
+      context 'env is missing referenced variable' do
+        specify do
+          configure do
+            reference  :A
+          end.and_ENV 'A' => 'B'
+
+          expect {
+            envied_require
+          }.to raise_error(/The following environment variables should be set: B/)
+        end
+      end
+
+      context 'using references' do
+
+        it 'makes using references easier' do
+          configure do
+            reference  :A
+          end.and_ENV('A' => 'B', 'B' => 'C')
+
+          envied_require
+
+          expect(ENV[ENVied.A]).to eq 'C' # usage without shortcut
+          expect(described_class._A).to eq 'C' 
+
+        end
+        
       end
 
 

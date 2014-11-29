@@ -26,6 +26,16 @@ describe ENVied::Configuration do
 
       expect(config.variables).to include ENVied::Variable.new(:bar, :string, default: 'bar')
     end
+
+    it 'adds an variable and a references' do
+      with_envfile do
+        reference :foo, :boolean
+      end
+
+      expect(config.variables).to include ENVied::Variable.new(:foo, :string)
+      expect(config.references.size).to equal 1
+    end
+
   end
 
   describe 'defaults' do

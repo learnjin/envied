@@ -46,7 +46,10 @@ class ENVied
     end
 
     def reference(name, *args)
-      variable name, *args
+      options = args.last.is_a?(Hash) ? args.pop : {}
+      type = :string
+
+      variable name, type, *options
       references << [proc{ ENV[name.to_s] }, args]
     end
 

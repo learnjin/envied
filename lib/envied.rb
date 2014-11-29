@@ -96,10 +96,20 @@ MSG
   end
 
   def self.method_missing(method, *args, &block)
-    respond_to_missing?(method) ? (env && env[method.to_s]) : super
+    if is_reference?(method)
+      method = method.to_s
+      method[0] = ''
+      env[method_missing(method, *args, &block)]
+    else
+      respond_to_missing?(method) ? (env && env[method.to_s]) : super
+    end
   end
 
   def self.respond_to_missing?(method, include_private = false)
     (env && env.has_key?(method)) || super
+  end
+
+  def self.is_reference?(method)
+    method.to_s.start_with?('_')
   end
 end

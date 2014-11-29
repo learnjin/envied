@@ -58,6 +58,18 @@ ENVied.PORT # => 3001
 ENVied.FORCE_SSL # => false
 ```
 
+### 4) Use resolved  references
+
+References allow easier access for references variables.
+
+```ruby
+# ENV['REDIS_PROVIDER'] = 'LOCAL_REDIS'
+# ENV['LOCAL_REDIS'] = 'redis://localhost:6379/0'
+
+ENVied._REDIS_PROVIDER # => 'redis://localhost:6379/0'
+```
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -140,10 +152,12 @@ enable_defaults! { ENV['RACK_ENV'] == 'development' }
 variable :FORCE_SSL, :boolean, default: 'false'
 variable :PORT, :integer, default: proc {|envied| envied.FORCE_SSL ? 443 : 80 }
 
-
 # References
 
-reference :REDIS_PROVIDER  # will fail if ENV['REDIS_PROVIDER'] or ENV[ENV['REDIS_PROVIDER']] are undefined
+# make sure the variable REDIS_PROVIDER and the variable with the value
+# of REDIS_PROVIDER are defined 
+
+reference :REDIS_PROVIDER
 
 ```
 
